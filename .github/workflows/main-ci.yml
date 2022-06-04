@@ -1,4 +1,4 @@
-name: CI
+name: Main CI
 
 on:
   push:
@@ -24,26 +24,18 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ github.workspace }}/apps/*/.next/cache
-          # key: nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
-          key: nextjs-${{ github.job }}-${{ github.ref_name }}-${{ github.sha }}
-          # restore-keys: nextjs-${{ hashFiles('**/package-lock.json') }}-
-          restore-keys: nextjs-${{ github.job }}-${{ github.ref_name }}-
+          key: ${{ github.ref_name }}-nextjs-cache-${{ github.job }}-${{ github.sha }}
+          restore-keys: ${{ github.ref_name }}-nextjs-cache-${{ github.job }}-
 
       - name: Setup .turbo cache
         uses: actions/cache@v2
         with:
           path: ${{ github.workspace }}/.turbo
-          key: turbo-${{ github.job }}-${{ github.ref_name }}-${{ github.sha }}
-          restore-keys: turbo-${{ github.job }}-${{ github.ref_name }}-
+          key: ${{ github.ref_name }}-turbo-cache-${{ github.job }}-${{ github.sha }}
+          restore-keys: ${{ github.ref_name }}-turbo-cache-${{ github.job }}-
 
       - name: Install dependencies
         run: npm ci --no-audit
-
-      # - name: Format
-      #   run: npm run format
-
-      # - name: Lint
-      #   run: npm run lint
 
       - name: Build
         run: npm run build:ci
