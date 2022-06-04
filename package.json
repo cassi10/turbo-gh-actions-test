@@ -14,7 +14,8 @@
     "build:ci": "turbo run build --cache-dir=./.turbo",
     "dev": "turbo run dev --parallel",
     "lint": "turbo run lint --cache-dir=./.turbo",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "devDependencies": {
     "eslint-config-custom": "latest",
