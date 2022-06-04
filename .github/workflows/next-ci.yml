@@ -1,9 +1,9 @@
 name: Next CI
 
 on:
-  push:
-    branches:
-      - next
+  # push:
+  #   branches:
+  #     - next
 
   workflow_dispatch:
 
