@@ -13,8 +13,8 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  setup:
-    name: Setup Repository and Caches
+  build:
+    name: Setup, lint, build.
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
@@ -43,21 +43,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-  lint:
-    name: Lint and Format
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
       - name: Format
         run: npm run format
 
       - name: Lint
         run: npm run lint
 
-  build:
-    name: Build
-    needs: [setup, lint]
-    runs-on: ubuntu-latest
-    steps:
       - name: Build
         run: npm run build:ci
