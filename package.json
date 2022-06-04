@@ -3,11 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "workspaces": [
-    "apps\\docs",
-    "apps\\web",
-    "packages\\eslint-config-custom",
-    "packages\\tsconfig",
-    "packages\\ui"
+    "apps/*",
+    "packages/*"
   ],
   "scripts": {
     "build": "turbo run build --cache-dir=./.turbo --filter=...[origin/main]",
