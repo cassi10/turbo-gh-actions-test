@@ -32,7 +32,7 @@ jobs:
       - name: Check no .next cache
         run: |
           ls -la apps/docs
-          ls -la apps/apps
+          ls -la apps/web
 
       - name: Next.JS Cache
         uses: actions/cache@v2
@@ -43,7 +43,7 @@ jobs:
       - name: Check .next cache exists
         run: |
           ls -la apps/docs
-          ls -la apps/apps
+          ls -la apps/web
 
       - name: Install dependencies
         run: npm install
