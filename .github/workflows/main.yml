@@ -29,6 +29,12 @@ jobs:
           node-version: 16
           cache: "npm"
 
+      - name: Next.JS Cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ github.workspace}}/apps/*/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}
+
       - name: Install dependencies
         run: npm install
 
