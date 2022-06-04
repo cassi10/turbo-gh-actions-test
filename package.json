@@ -8,7 +8,7 @@
   ],
   "scripts": {
     "build": "turbo run build --cache-dir=./.turbo",
-    "build:ci": "turbo run build --cache-dir=./.turbo --filter=[HEAD~1]",
+    "build:ci": "turbo run build --cache-dir=./.turbo --filter=[origin/main]",
     "dev": "turbo run dev --parallel",
     "lint": "turbo run lint --cache-dir=./.turbo",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
