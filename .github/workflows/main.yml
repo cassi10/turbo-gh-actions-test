@@ -5,8 +5,8 @@ name: CI
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push events but only for the "main" branch
-  push:
-    branches: ["main"]
+  # push:
+  #   branches: ["main"]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -34,6 +34,8 @@ jobs:
           key: turbo-${{ github.job }}-${{ github.ref_name }}-${{ github.sha }}
           restore-keys: |
             turbo-${{ github.job }}-${{ github.ref_name }}-
+
+      - run: ls -la
 
       - name: Install dependencies
         run: npm ci
