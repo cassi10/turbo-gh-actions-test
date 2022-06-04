@@ -29,14 +29,24 @@ jobs:
           node-version: 16
           cache: "npm"
 
+      - name: Check no .next cache
+        run: |
+          ls -la apps/docs/.next
+          ls -la apps/apps/.next
+
       - name: Next.JS Cache
         uses: actions/cache@v2
         with:
           path: ${{ github.workspace}}/apps/*/.next/cache
           key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}
 
+      - name: Check .next cache exists
+        run: |
+          ls -la apps/docs/.next
+          ls -la apps/apps/.next
+
       - name: Install dependencies
         run: npm install
 
-      - name: Build All Changed
-        run: npm run build:ci
+      - name: Build All
+        run: npm run build
