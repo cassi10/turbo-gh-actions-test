@@ -1,7 +1,7 @@
 name: Test Deploy
 
 on:
-  pull_request:
+  push:
     branches:
       - main
     paths:
@@ -10,7 +10,7 @@ on:
 jobs:
   check_changes:
     runs-on: ubuntu-latest
-    if: github.head_ref == "staging"
+    # if: github.head_ref == "staging"
     outputs:
       docs: ${{ steps.filter.outputs.docs }}
       web: ${{ steps.filter.outputs.web }}
