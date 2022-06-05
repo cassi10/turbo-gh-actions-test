@@ -9,6 +9,7 @@ on:
 
 jobs:
   check_changes:
+    name: Check File Changes
     runs-on: ubuntu-latest
     # if: github.head_ref == "staging"
     outputs:
@@ -17,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: dorny/paths-filter@v2
-        id: changes
+        id: filter
         with:
           filters: |
             docs:
@@ -25,6 +26,7 @@ jobs:
             web:
               - 'apps/web/**'
   deploy_docs:
+    name: Deploy Docs
     needs: check_changes
     if: ${{ needs.check_changes.outputs.docs == 'true' }}
     runs-on: ubuntu-latest
@@ -36,6 +38,7 @@ jobs:
       - run: echo 'lint & format'
       - run: echo 'deploy'
   deploy_web:
+    name: Deploy Web
     needs: check_changes
     if: ${{ needs.check_changes.outputs.web == 'true' }}
     runs-on: ubuntu-latest
