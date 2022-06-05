@@ -28,28 +28,28 @@ jobs:
         with:
           filters: |
             docs:
-              - "apps/docs/**"
+              - 'apps/docs/**'
             web:
-              - "apps/web/**"
+              - 'apps/web/**'
   deploy_docs:
     needs: check_changes
-    if: ${{ needs.changes.outputs.docs == "true" }}
+    if: ${{ needs.changes.outputs.docs == 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - run: echo "checkout repo"
-      - run: echo "pull caches"
-      - run: echo "npx turbo --filter=@scope/docs"
-      - run: echo "install deps"
-      - run: echo "lint & format"
-      - run: echo "deploy"
+      - run: echo 'checkout repo'
+      - run: echo 'pull caches'
+      - run: echo 'npx turbo --filter=@scope/docs'
+      - run: echo 'install deps'
+      - run: echo 'lint & format'
+      - run: echo 'deploy'
   deploy_web:
     needs: check_changes
-    if: ${{ needs.changes.outputs.web == "true" }}
+    if: ${{ needs.changes.outputs.web == 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - run: echo "checkout repo"
-      - run: echo "pull caches"
-      - run: echo "npx turbo --filter=@scope/web"
-      - run: echo "install deps"
-      - run: echo "lint & format"
-      - run: echo "deploy"
+      - run: echo 'checkout repo'
+      - run: echo 'pull caches'
+      - run: echo 'npx turbo --filter=@scope/web'
+      - run: echo 'install deps'
+      - run: echo 'lint & format'
+      - run: echo 'deploy'
