@@ -26,7 +26,7 @@ jobs:
               - 'apps/web/**'
   deploy_docs:
     needs: check_changes
-    if: ${{ needs.changes.outputs.docs == 'true' }}
+    if: ${{ needs.check_changes.outputs.docs == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - run: echo 'checkout repo'
@@ -37,7 +37,7 @@ jobs:
       - run: echo 'deploy'
   deploy_web:
     needs: check_changes
-    if: ${{ needs.changes.outputs.web == 'true' }}
+    if: ${{ needs.check_changes.outputs.web == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - run: echo 'checkout repo'
