@@ -1,15 +1,7 @@
 name: Test Deploy
 
-#     - name: Deploy Docs
-#   if: steps.changes.outputs.docs == "true"
-#   run: echo deploy docs
-
-# - name: Deploy Web
-#   if: steps.changes.outputs.web == "true"
-#   run: echo deploy web
-
 on:
-  push:
+  pull_request:
     branches:
       - main
     paths:
