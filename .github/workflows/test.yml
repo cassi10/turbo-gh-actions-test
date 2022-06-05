@@ -1,4 +1,12 @@
-name: Test
+name: Test Deploy
+
+#     - name: Deploy Docs
+#   if: steps.changes.outputs.docs == "true"
+#   run: echo deploy docs
+
+# - name: Deploy Web
+#   if: steps.changes.outputs.web == "true"
+#   run: echo deploy web
 
 on:
   push:
@@ -8,7 +16,40 @@ on:
       - "apps/**"
 
 jobs:
-  test:
+  check_changes:
+    runs-on: ubuntu-latest
+    if: github.head_ref == "staging"
+    outputs:
+      docs: ${{ steps.filter.outputs.docs }}
+      web: ${{ steps.filter.outputs.web }}
+    steps:
+      - uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            docs:
+              - "apps/docs/**"
+            web:
+              - "apps/web/**"
+  deploy_docs:
+    needs: check_changes
+    if: ${{ needs.changes.outputs.docs == "true" }}
     runs-on: ubuntu-latest
     steps:
-      - run: echo deploy docs website
+      - run: echo "checkout repo"
+      - run: echo "pull caches"
+      - run: echo "npx turbo --filter=@scope/docs"
+      - run: echo "install deps"
+      - run: echo "lint & format"
+      - run: echo "deploy"
+  deploy_web:
+    needs: check_changes
+    if: ${{ needs.changes.outputs.web == "true" }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "checkout repo"
+      - run: echo "pull caches"
+      - run: echo "npx turbo --filter=@scope/web"
+      - run: echo "install deps"
+      - run: echo "lint & format"
+      - run: echo "deploy"
