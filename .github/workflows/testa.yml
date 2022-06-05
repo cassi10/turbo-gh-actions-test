@@ -1,14 +1,14 @@
-name: Test
+name: Test A
 
 on:
-  push:
+  pull_request:
     branches:
       - main
-    paths:
-      - "apps/**"
 
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - run: echo deploy docs website
+      - run: echo ${{github.base_ref}}
+      - run: echo ${{github.head_ref}}
