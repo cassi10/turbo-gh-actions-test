@@ -8,4 +8,4 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - run: echo ${{ github.event.label }}
+      - run: echo ${{ fromJSON(github.event) }}
