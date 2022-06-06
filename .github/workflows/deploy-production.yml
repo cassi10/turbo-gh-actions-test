@@ -26,6 +26,8 @@ jobs:
               - 'apps/docs/**'
             web:
               - 'apps/web/**'
+  # build if needs.check_changes.outputs.docs == 'true' || needs.check_changes.outputs.web == 'true'
+  # save .next build artifacts
   deploy_docs:
     name: Deploy Docs
     needs: check_changes
