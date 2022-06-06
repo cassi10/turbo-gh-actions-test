@@ -8,5 +8,5 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - run: echo ${{ toJSON(github.event.issue) }}
+      - run: echo ${{ fromJSON(github.event.issue) }}
       - run: echo ${{ github.event.label.name }}
