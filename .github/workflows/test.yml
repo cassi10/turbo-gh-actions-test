@@ -2,10 +2,31 @@ name: Test
 
 on:
   issues:
-    types: [labeled]
+    types:
+      - labeled
+
+# when hotfix label added
+
+# create new branch with issue name or number or something
+# find way to get staging last commit oid
+
+# gh api graphql -F name='refs/heads/hotfix/${{name}}' -F oid='' -F repositoryId='R_kgDOHcjXwA' -f query='
+#   mutation($name: String!, $oid: GitObjectID!, $repositoryId: ID!) {
+#     createRef(input:{name: $name, oid: $oid, repositoryId: $repositoryId}) {
+#       ref {
+#         prefix
+#         name
+#       }
+#     }
+#   }
+# '
+
+# https://docs.github.com/en/actions/managing-issues-and-pull-requests/commenting-on-an-issue-when-a-label-is-added
+# add comment to issue saying "branch hotfix/name has been created. git fetch -a && git checkout hotfix/name"
+# etc and so forth
 
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - run: echo ${{github.event.label}}
+      - run: echo ${{github.event.label.name}}

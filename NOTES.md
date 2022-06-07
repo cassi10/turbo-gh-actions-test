@@ -12,3 +12,13 @@ gh api graphql -F name='refs/heads/hotfix/bug' -F oid='523a3166528459643b1300391
   }
 '
 ```
+
+```toml
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[build]
+  base = "/apps/docs"
+  build = "next build"
+  publish = ".next"
+```
