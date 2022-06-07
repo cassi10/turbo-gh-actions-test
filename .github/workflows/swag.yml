@@ -18,9 +18,17 @@ jobs:
           node-version: 16
           cache: "npm"
       - run: npm ci --no-audit
-      - uses: netlify/actions/cli@master
-        with:
-          args: deploy --build
+      - run: npm install --save-dev netlify-cli
+      - name: Deploy
         env:
           NETLIFY_SITE_ID: ${{ secrets.DOCS_SITE_ID }}
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        working-directory: ./apps/docs
+        run: netlify deploy --build
+
+      # - uses: netlify/actions/cli@master
+      #   with:
+      #     args: deploy --build
+      # env:
+      #   NETLIFY_SITE_ID: ${{ secrets.DOCS_SITE_ID }}
+      #   NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
