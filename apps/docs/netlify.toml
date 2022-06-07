@@ -1,8 +1,4 @@
 # must run deploy --build command from /apps/docs
-
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
-
 [build]
   base = "/apps/docs"
   command = "next build"
