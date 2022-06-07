@@ -18,7 +18,7 @@ jobs:
       - run: npm ci --no-audit
       - run: ls apps
         continue-on-error: true
-      - run: cd ${{ github.workspace }/apps/docs
+      - run: cd ${{ github.workspace }}/apps/docs
       - uses: netlify/actions/cli@master
         with:
           args: deploy --build
