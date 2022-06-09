@@ -18,7 +18,7 @@ jobs:
     name: Check the Head Ref
     runs-on: ubuntu-latest
     steps:
-      - if: ${{ github.context.head_ref != next }}
+      - if: ${{ github.context.head_ref != 'next' }}
         uses: actions/github-script@v3
         with:
           script: |
