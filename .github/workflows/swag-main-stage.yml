@@ -14,8 +14,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  check_head_ref:
-    name: Check the Head Ref
+  check_source_branch:
+    name: Check Source Branch
     runs-on: ubuntu-latest
     steps:
       - if: ${{ github.context.head_ref != 'next' }}
@@ -23,10 +23,20 @@ jobs:
         with:
           script: |
             await github.rest.issues.createComment({
-              issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: 'Pull requests into the `main` branch can **only** have the `next` branch as a source.'
+              issue_number: context.issue.number,
+              body: `### Pull requests into the **`main`** branch can **only** have the **`next`** branch as the source.
+
+              Please create a new pull request with the **`next`** branch as the source.
+              `
+            })
+
+            await github.rest.pulls.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+              state: "closed"
             })
 
             core.setFailed()
