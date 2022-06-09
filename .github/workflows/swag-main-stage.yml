@@ -18,7 +18,7 @@ jobs:
     name: Check the Head Ref
     runs-on: ubuntu-latest
     steps:
-      - if: ${{ github.context.head_ref != "next" }}
+      - if: ${{ github.context.head_ref != next }}
         uses: actions/github-script@v3
         with:
           script: |
@@ -30,6 +30,7 @@ jobs:
               body: 'Pull requests into the `main` branch can **only** have the `next` branch as a source.'
             })
   get_changes:
+    needs: check_head_ref
     if: success()
     name: Check File Changes
     runs-on: ubuntu-latest
