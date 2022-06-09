@@ -41,7 +41,7 @@ jobs:
 
             core.setFailed()
   get_changes:
-    needs: check_head_ref
+    needs: check_source_branch
     if: success()
     name: Check File Changes
     runs-on: ubuntu-latest
