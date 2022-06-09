@@ -26,10 +26,10 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              body: `### Pull requests into the **`main`** branch can **only** have the **`next`** branch as the source.
+              body: '### Pull requests into the **`main`** branch can **only** have the **`next`** branch as the source.
 
               Please create a new pull request with the **`next`** branch as the source.
-              `
+              '
             })
 
             await github.rest.pulls.update({
