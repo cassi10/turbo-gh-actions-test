@@ -1,0 +1,67 @@
+# https://docs.github.com/en/actions/using-workflows/reusing-workflows
+
+name: Deploy to Staging on Pull Request to Main
+
+on:
+  pull_request:
+    types:
+      - opened
+    branches:
+      - main
+    paths:
+      - "apps/**"
+
+  workflow_dispatch:
+
+jobs:
+  check_head_ref:
+    name: Check the Head Ref
+    runs-on: ubuntu-latest
+    steps:
+      - if: ${{ github.context.head_ref != "next" }}
+        uses: actions/github-script@v3
+        with:
+          script: |
+            core.setFailed('Pull request's into main branch must only be done from the next branch.')
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'Pull requests into the `main` branch can **only** have the `next` branch as a source.'
+            })
+  get_changes:
+    if: success()
+    name: Check File Changes
+    runs-on: ubuntu-latest
+    outputs:
+      docs: ${{ steps.filter.outputs.docs }}
+      web: ${{ steps.filter.outputs.web }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.context.head_ref }}
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            docs:
+              - 'apps/docs/**'
+            web:
+              - 'apps/web/**'
+  # build_and_deploy:
+  #   name: Build and Deploy
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: actions/setup-node@v2
+  #       with:
+  #         node-version: 16
+  #         cache: "npm"
+  #     - run: npm ci --no-audit
+  #     - run: npm install --save-dev netlify-cli
+  #     - name: Deploy
+  #       env:
+  #         NETLIFY_SITE_ID: ${{ secrets.DOCS_SITE_ID }}
+  #         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+  #       working-directory: ./apps/docs
+  #       run: netlify deploy --build

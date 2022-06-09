@@ -10,6 +10,7 @@
     "build": "turbo run build --cache-dir=./.turbo --filter=...[origin/main]",
     "build:ci": "turbo run build --cache-dir=./.turbo",
     "dev": "turbo run dev --parallel",
+    "check-types": "turbo run check-types --cache-dir./.turbo",
     "lint": "turbo run lint --cache-dir=./.turbo",
     "format": "prettier --write .",
     "format:check": "prettier --check ."

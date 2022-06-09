@@ -1,9 +1,13 @@
+# https://docs.github.com/en/actions/using-workflows/reusing-workflows
+
 name: Deploy to Production on Push to Main
 
 on:
   push:
     branches:
       - main
+    paths:
+      - "apps/**"
 
   workflow_dispatch:
 
@@ -25,10 +29,3 @@ jobs:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
         working-directory: ./apps/docs
         run: netlify deploy --build
-
-      # - uses: netlify/actions/cli@master
-      #   with:
-      #     args: deploy --build
-      # env:
-      #   NETLIFY_SITE_ID: ${{ secrets.DOCS_SITE_ID }}
-      #   NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
