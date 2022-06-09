@@ -22,12 +22,12 @@ jobs:
         uses: actions/github-script@v3
         with:
           script: |
-            core.setFailed('Pull request's into main branch must only be done from the next branch.')
+            core.setFailed('Pull request\'s into main branch must only be done from the next branch.')
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: 'Pull requests into the `main` branch can **only** have the `next` branch as a source.'
+              body: `Pull requests into the `main` branch can **only** have the `next` branch as a source.`
             })
   get_changes:
     needs: check_head_ref
