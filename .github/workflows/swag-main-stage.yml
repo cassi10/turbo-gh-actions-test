@@ -1,15 +1,5 @@
 # https://docs.github.com/en/actions/using-workflows/reusing-workflows
 
-# await github.rest.issues.createComment({
-#   owner: context.repo.owner,
-#   repo: context.repo.repo,
-#   issue_number: context.issue.number,
-#   body: '### Pull requests into the **`main`** branch can **only** have the **`next`** branch as the source.
-
-#   Please create a new pull request with the **`next`** branch as the source.
-#   '
-# })
-
 name: Deploy to Staging on Pull Request to Main
 
 on:
@@ -32,6 +22,16 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `### Pull requests into the **\`main\`** branch can **only** have the **\`next\`** branch as the source.
+
+              Please create a new pull request with the **\`next\`** branch as the source.
+              `
+            })
+
             await github.rest.pulls.update({
               owner: context.repo.owner,
               repo: context.repo.repo,
