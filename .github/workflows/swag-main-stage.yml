@@ -4,8 +4,6 @@ name: Deploy to Staging on Pull Request to Main
 
 on:
   pull_request:
-    types:
-      - opened
     branches:
       - main
     paths:
