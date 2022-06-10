@@ -18,30 +18,31 @@ jobs:
     name: Check Source Branch
     runs-on: ubuntu-latest
     steps:
-      - run: echo ${{ github.base_ref }}
-      - run: echo ${{ github.head_ref }}
-      - if: ${{ github.context.head_ref != 'refs/heads/next' }}
-        uses: actions/github-script@v6
+      - uses: actions/github-script@v6
         with:
           script: |
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              body: `### Pull requests into the **\`main\`** branch can **only** have the **\`next\`** branch as the source.
+            if (context.payload.pull_request.head.ref === 'next') {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: `### Pull requests into the **\`main\`** branch can **only** have the **\`next\`** branch as the source.
 
-              Please create a new pull request with the **\`next\`** branch as the source.
-              `
-            })
+                Please create a new pull request with the **\`next\`** branch as the source.
+                `
+              })
 
-            await github.rest.pulls.update({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: context.issue.number,
-              state: 'closed'
-            })
+              await github.rest.pulls.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: context.issue.number,
+                state: 'closed'
+              })
 
-            core.setFailed()
+              core.setFailed()
+            } else {
+              core.info('Head ref is next... continuing.')
+            }
   get_changes:
     needs: check_source_branch
     if: success()
@@ -53,7 +54,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: ${{ github.context.head_ref }}
+          ref: ${{ github.head_ref }}
       - uses: dorny/paths-filter@v2
         id: filter
         with:
