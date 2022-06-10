@@ -18,7 +18,9 @@ jobs:
     name: Check Source Branch
     runs-on: ubuntu-latest
     steps:
-      - if: ${{ github.context.head_ref != 'next' }}
+      - run: echo ${{ github.base_ref }}
+      - run: echo ${{ github.head_ref }}
+      - if: ${{ github.context.head_ref != 'refs/heads/next' }}
         uses: actions/github-script@v6
         with:
           script: |
