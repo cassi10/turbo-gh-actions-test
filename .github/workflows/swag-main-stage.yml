@@ -22,26 +22,26 @@ jobs:
         with:
           script: |
             if (context.payload.pull_request.head.ref !== 'next') {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-                body: `### You can only merge into **\`main`\** from **\`next`\** not **\`context.payload.pull_request.head`\**.
+               await github.rest.issues.createComment({
+                 owner: context.repo.owner,
+                 repo: context.repo.repo,
+                 issue_number: context.issue.number,
+                 body: `### You can only merge into **\`main\`** from **\`next\`** not **\`context.payload.pull_request.head\`**.
 
-                  Please create a new pull request with the **\`next\`** branch as the source.`
-              })
+                   Please create a new pull request with the **\`next\`** branch as the source.`
+               })
 
-              await github.rest.pulls.update({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: context.issue.number,
-                state: 'closed'
-              })
+               await github.rest.pulls.update({
+                 owner: context.repo.owner,
+                 repo: context.repo.repo,
+                 pull_number: context.issue.number,
+                 state: 'closed'
+               })
 
-              core.setFailed()
-            } else {
-              core.info('Head ref is next... continuing.')
-            }
+               core.setFailed()
+             } else {
+               core.info('Head ref is next... continuing.')
+             }
   get_changes:
     needs: check_source_branch
     if: success()
