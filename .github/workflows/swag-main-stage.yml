@@ -108,6 +108,9 @@ jobs:
           key: ${{ github.head_ref }}-docs-nextjs-${{ hashFiles('package-lock.json') }}-${{ hashFiles('**.[jt]s', '**[jt]sx') }}
           restore-keys: ${{ github.head_ref }}-docs-nextjs-${{ hashFiles('package-lock.json') }}-
 
+      - name: Build
+        run: turbo run build --cache-dir=.turbo --filter=@scope/docs
+
       - name: Deploy
         env:
           NETLIFY_SITE_ID: ${{ secrets.DOCS_SITE_ID }}
