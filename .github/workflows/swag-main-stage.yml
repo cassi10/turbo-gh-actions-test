@@ -65,8 +65,8 @@ jobs:
     name: Build and Deploy Docs
     if: ${{ needs.get_changes.outputs.docs == 'true' }}
     environment:
-      name: staging
-      url: https://staging${{ github.event.number }}--ibcarr-testing.netlify.app
+      name: swag
+      url: https://staging--ibcarr-testing.netlify.app
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -81,7 +81,7 @@ jobs:
           NETLIFY_SITE_ID: ${{ secrets.DOCS_SITE_ID }}
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
         working-directory: ./apps/docs
-        run: netlify deploy --build --alias staging${{ github.event.number }}
+        run: netlify deploy --build --alias staging
       - uses: actions/github-script@v6
         with:
           script: |
@@ -91,5 +91,5 @@ jobs:
               issue_number: context.issue.number,
               body: `## :heavy_check_mark: Pull Request Preview: **Docs**.
 
-              ### This pull request preview for **\`docs\`** can be found [here](https://staging${ context.payload.number }--ibcarr-testing.netlify.app).`
+              ### This pull request preview for **\`docs\`** can be found [here](https://staging--ibcarr-testing.netlify.app).`
             });
