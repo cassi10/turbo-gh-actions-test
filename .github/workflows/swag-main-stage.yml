@@ -61,6 +61,7 @@ jobs:
             web:
               - 'apps/web/**'
   build_and_deploy_docs:
+    needs: get_changes
     name: Build and Deploy Docs
     if: ${{ needs.get_changes.outputs.docs == 'true' }}
     runs-on: ubuntu-latest
