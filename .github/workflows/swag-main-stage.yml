@@ -41,7 +41,6 @@ jobs:
             }
   get_changes:
     needs: check_source_branch
-    if: success()
     name: Check File Changes
     runs-on: ubuntu-latest
     outputs:
@@ -70,32 +69,15 @@ jobs:
   # - and only netlify deploy --build the changed apps
   # - https://docs.github.com/en/actions/using-workflows/reusing-workflows
 
-  # build:
-  #   needs: get_changes
-  #   name: Build
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout Repository
-  #       uses: actions/checkout@v3
-  #       with:
-  #         ref: ${{ github.head_ref }}
+  # `thing`-cache-`platform`-`fileHash`-`fileHashOptional`
+  # where thing is the thing being cached... node, nextjs, .turbo, etc.
+  # where platform is the OS... Linux, Windows, MacOS.
+  # where fileHash is a hash of package-lock.json.
+  # where fileHashOptional is a hash of any other files e.g all ts/tsx files.
 
-  #     - name: Setup Node v16
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: 16
-  #         cache: "npm"
-
-  #     - name: Install Dependencies
-  #       run: npm ci --ignore-scripts --prefer-offline --no-audit
-
-  build_and_deploy_docs:
+  build:
+    name: Build
     needs: get_changes
-    name: Build and Deploy Docs
-    if: ${{ needs.get_changes.outputs.docs == 'true' || needs.get_changes.outputs.packages == 'true' }}
-    environment:
-      name: staging
-      url: https://staging--ibcarr-testing.netlify.app
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -107,46 +89,124 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
-
-      - name: Cache .npm
-        uses: actions/cache@v3
-        with:
-          path: ~/.npm
-          key: npm-${{ hashFiles('package-lock.json') }}
-          restore-keys: npm-
+          cache: "npm"
 
       - name: Install Dependencies
-        run: npm ci --ignore-scripts
+        run: npm ci --ignore-scripts --prefer-offline --no-audit
 
       - name: Install netlify-cli
-        run: npm install --save-dev netlify-cli
+        run: npm install -D netlify-cli --ignore-scripts --prefer-offline --no-audit
+
+      - name: Cache turbo cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ github.workspace }}/.turbo
+          key: turbo-cache-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
+          restore-keys: turbo-cache-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-
 
       - name: Cache .next cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
-          path: ${{ github.workspace }}/apps/docs/.next/cache
-          key: ${{ github.github.head_ref }}-docs-nextjs-cache-${{ github.job }}-${{ hashFiles('package-lock.json') }}
-          restore-keys: ${{ github.github.head_ref }}-docs-nextjs-cache-${{ github.job }}-
+          path: ${{ github.workspace }}/apps/*/.next/cache
+          key: nextjs-cache-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
+          restore-keys: nextjs-cache-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-
+
+      - name: Code Standards
+        run: |
+          npm run format:check
+          npm run lint
 
       - name: Build
-        run: npx turbo run build --cache-dir=.turbo --filter=@scope/docs
+        run: npm run build:ci
 
-      - name: Deploy
-        env:
-          NETLIFY_SITE_ID: ${{ secrets.DOCS_SITE_ID }}
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-        working-directory: ./apps/docs
-        run: netlify deploy --build --alias staging
+      - name: Build for Netlify
+        run: echo "npm run build:netlify"
 
-      - name: Comment on PR
-        uses: actions/github-script@v6
-        with:
-          script: |
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              body: `## :heavy_check_mark: Pull Request Preview: **Docs**.
+      - name: Upload Build Artifacts
+        run: echo "upload build artifacts - apps/*/package.json apps/*/_next apps/*/.netlify apps/*/.next"
 
-              ### This pull request preview for **\`docs\`** can be found [here](https://staging--ibcarr-testing.netlify.app).`
-            });
+  deploy_docs:
+    name: Deploy Docs
+    needs: [get_changes, build]
+    if: ${{ needs.get_changes.outputs.docs == 'true' || needs.get_changes.outputs.packages == 'true' }}
+    environment:
+      name: staging:docs
+      url: https://staging--ibcarr-testing.netlify.app
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "Download docs build artifact - contains package.json, .next, _next and .netlify"
+          echo "Install netlify-cli and @netlify/plugin-nextjs"
+
+  deploy_web:
+    name: Deploy Web
+    needs: [get_changes, build]
+    if: ${{ needs.get_changes.outputs.web == 'true' || needs.get_changes.outputs.packages == 'true' }}
+    environment: staging:web
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "Download docs build artifact - contains package.json, .next, _next and .netlify"
+          echo "Install netlify-cli and @netlify/plugin-nextjs"
+
+  # build_and_deploy_docs:
+  #   needs: get_changes
+  #   name: Build and Deploy Docs
+  #   if: ${{ needs.get_changes.outputs.docs == 'true' || needs.get_changes.outputs.packages == 'true' }}
+  #   environment:
+  #     name: staging
+  #     url: https://staging--ibcarr-testing.netlify.app
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout Repository
+  #       uses: actions/checkout@v3
+  #       with:
+  #         ref: ${{ github.head_ref }}
+
+  #     - name: Setup Node v16
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: 16
+
+  #     - name: Cache .npm
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: ~/.npm
+  #         key: npm-${{ hashFiles('package-lock.json') }}
+  #         restore-keys: npm-
+
+  #     - name: Install Dependencies
+  #       run: npm ci --ignore-scripts
+
+  #     - name: Install netlify-cli
+  #       run: npm install --save-dev netlify-cli
+
+  #     - name: Cache .next cache
+  #       uses: actions/cache@v2
+  #       with:
+  #         path: ${{ github.workspace }}/apps/docs/.next/cache
+  #         key: ${{ github.github.head_ref }}-docs-nextjs-cache-${{ github.job }}-${{ hashFiles('package-lock.json') }}
+  #         restore-keys: ${{ github.github.head_ref }}-docs-nextjs-cache-${{ github.job }}-
+
+  #     - name: Build
+  #       run: npx turbo run build --cache-dir=.turbo --filter=@scope/docs
+
+  #     - name: Deploy
+  #       env:
+  #         NETLIFY_SITE_ID: ${{ secrets.DOCS_SITE_ID }}
+  #         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+  #       working-directory: ./apps/docs
+  #       run: netlify deploy --build --alias staging
+
+  #     - name: Comment on PR
+  #       uses: actions/github-script@v6
+  #       with:
+  #         script: |
+  #           await github.rest.issues.createComment({
+  #             owner: context.repo.owner,
+  #             repo: context.repo.repo,
+  #             issue_number: context.issue.number,
+  #             body: `## :heavy_check_mark: Pull Request Preview: **Docs**.
+
+  #             ### This pull request preview for **\`docs\`** can be found [here](https://staging--ibcarr-testing.netlify.app).`
+  #           });
