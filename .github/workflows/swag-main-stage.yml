@@ -24,7 +24,7 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.issue.number,
-                body: `### You can only merge into **\`main\`** from **\`next\`** not **\`context.payload.pull_request.head\`**.
+                body: `### You can only merge into **\`main\`** from **\`next\`** not **\`${ context.payload.pull_request.head }\`**.
                 
                 Please create a new pull request with the **\`next\`** branch as the source.`
               });
@@ -39,15 +39,6 @@ jobs:
               core.setFailed();
             } else {
               core.info("Head ref is next... continuing.");
-
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-                body: `### You can only merge into **\`main\`** from **\`next\`** not **\`context.payload.pull_request.head\`**.
-
-                Please create a new pull request with the **\`next\`** branch as the source.`
-              });
             }
   get_changes:
     needs: check_source_branch
