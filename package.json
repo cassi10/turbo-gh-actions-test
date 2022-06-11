@@ -16,7 +16,7 @@
     "format:check": "prettier --check ."
   },
   "devDependencies": {
-    "eslint-config-custom": "latest",
+    "@scope/eslint-config-custom": "latest",
     "prettier": "latest",
     "turbo": "latest"
   },

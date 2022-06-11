@@ -1,5 +1,3 @@
-# https://docs.github.com/en/actions/using-workflows/reusing-workflows
-
 name: Deploy to Production on Push to Main
 
 on:
@@ -12,20 +10,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build_and_deploy:
-    name: Build and Deploy
+  cry:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: 16
-          cache: "npm"
-      - run: npm ci --no-audit
-      - run: npm install --save-dev netlify-cli
-      - name: Deploy
-        env:
-          NETLIFY_SITE_ID: ${{ secrets.DOCS_SITE_ID }}
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-        working-directory: ./apps/docs
-        run: netlify deploy --build
+      - run: "echo 'TODO: Add this workflow to work correctly'"

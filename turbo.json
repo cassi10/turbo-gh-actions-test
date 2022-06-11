@@ -6,12 +6,12 @@
       "dependsOn": ["^build"],
       "outputs": [".next/**"]
     },
-    "lint": {
-      "dependsOn": ["^lint"],
+    "check-types": {
+      "dependsOn": ["^check-types"],
       "outputs": []
     },
-    "check-types": {
-      "dependsOn": ["lint", "^check-types"],
+    "lint": {
+      "dependsOn": ["check-types", "^lint"],
       "outputs": []
     },
     "dev": {

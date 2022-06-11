@@ -1,4 +1,9 @@
-import * as React from "react";
-export const Button = () => {
-  return <button>Boofsdfdsfsdp</button>;
+import { ReactNode } from "react";
+
+type ButtonProperties = {
+  children: ReactNode;
+};
+
+export const Button = ({ children }: ButtonProperties) => {
+  return <button>{children}</button>;
 };
