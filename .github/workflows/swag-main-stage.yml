@@ -8,6 +8,7 @@ on:
       - main
     paths:
       - "apps/**"
+      - "packages/**"
 
   workflow_dispatch:
 
@@ -48,6 +49,7 @@ jobs:
     outputs:
       docs: ${{ steps.filter.outputs.docs }}
       web: ${{ steps.filter.outputs.web }}
+      packages: ${{ steps.filter.outputs.packages }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -60,12 +62,14 @@ jobs:
               - 'apps/docs/**'
             web:
               - 'apps/web/**'
+            packages:
+              - 'packages/**'
   build_and_deploy_docs:
     needs: get_changes
     name: Build and Deploy Docs
-    if: ${{ needs.get_changes.outputs.docs == 'true' }}
+    if: ${{ needs.get_changes.outputs.docs == 'true' || needs.get_changes.outputs.packages == 'true' }}
     environment:
-      name: swag
+      name: staging
       url: https://staging--ibcarr-testing.netlify.app
     runs-on: ubuntu-latest
     steps:
@@ -73,9 +77,18 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: 16
-          cache: "npm"
-      - run: npm ci --no-audit
+      - uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: npm-${{ hashFiles('package-lock.json') }}
+          restore-keys: npm-
+      - run: npm ci --ignore-scripts
       - run: npm install --save-dev netlify-cli
+      - uses: actions/cache@v2
+        with:
+          path: ${{ github.workspace }}/apps/docs/.next/cache
+          key: ${{ github.ref_name }}-docs-nextjs-cache-${{ github.job }}-${{ github.sha }}
+          restore-keys: ${{ github.ref_name }}-docs-nextjs-cache-${{ github.job }}-
       - name: Deploy
         env:
           NETLIFY_SITE_ID: ${{ secrets.DOCS_SITE_ID }}
