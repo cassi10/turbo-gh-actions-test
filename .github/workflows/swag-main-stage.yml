@@ -69,6 +69,26 @@ jobs:
   # - and also this way we can split all this crap into seperate workflow files
   # - and only netlify deploy --build the changed apps
   # - https://docs.github.com/en/actions/using-workflows/reusing-workflows
+
+  # build:
+  #   needs: get_changes
+  #   name: Build
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout Repository
+  #       uses: actions/checkout@v3
+  #       with:
+  #         ref: ${{ github.head_ref }}
+
+  #     - name: Setup Node v16
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: 16
+  #         cache: "npm"
+
+  #     - name: Install Dependencies
+  #       run: npm ci --ignore-scripts --prefer-offline --no-audit
+
   build_and_deploy_docs:
     needs: get_changes
     name: Build and Deploy Docs
@@ -92,8 +112,8 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.npm
-          key: ${{ github.head_ref }}-npm-${{ hashFiles('package-lock.json') }}
-          restore-keys: ${{ github.head_ref }}-npm-
+          key: npm-${{ hashFiles('package-lock.json') }}
+          restore-keys: npm-
 
       - name: Install Dependencies
         run: npm ci --ignore-scripts
@@ -102,11 +122,11 @@ jobs:
         run: npm install --save-dev netlify-cli
 
       - name: Cache .next cache
-        uses: actions/cache@v3
+        uses: actions/cache@v2
         with:
           path: ${{ github.workspace }}/apps/docs/.next/cache
-          key: ${{ github.head_ref }}-docs-nextjs-${{ hashFiles('package-lock.json') }}-${{ hashFiles('**.[jt]s', '**[jt]sx') }}
-          restore-keys: ${{ github.head_ref }}-docs-nextjs-${{ hashFiles('package-lock.json') }}-
+          key: ${{ github.github.head_ref }}-docs-nextjs-cache-${{ github.job }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: ${{ github.github.head_ref }}-docs-nextjs-cache-${{ github.job }}-
 
       - name: Build
         run: npx turbo run build --cache-dir=.turbo --filter=@scope/docs
