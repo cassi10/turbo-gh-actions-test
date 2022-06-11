@@ -64,7 +64,9 @@ jobs:
     needs: get_changes
     name: Build and Deploy Docs
     if: ${{ needs.get_changes.outputs.docs == 'true' }}
-    environment: staging
+    environment:
+      name: staging
+      url: https://staging${{ github.event.number }}--ibcarr-testing.netlify.app
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
