@@ -7,18 +7,18 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "turbo run build --cache-dir=./.turbo --filter=...[origin/main]",
-    "build:ci": "turbo run build --cache-dir=./.turbo",
+    "build": "turbo run build",
+    "build:ci": "turbo run build --cache-dir=.turbo",
     "dev": "turbo run dev --parallel",
-    "check-types": "turbo run check-types --cache-dir./.turbo",
-    "lint": "turbo run lint --cache-dir=./.turbo",
+    "check-types": "turbo run check-types",
+    "lint": "turbo run lint",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
   "devDependencies": {
-    "@scope/eslint-config-custom": "latest",
-    "prettier": "latest",
-    "turbo": "latest"
+    "@scope/eslint-config-custom": "*",
+    "prettier": "^2.6.2",
+    "turbo": "^1.2.16"
   },
   "engines": {
     "npm": ">=7.0.0",
