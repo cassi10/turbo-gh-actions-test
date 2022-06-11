@@ -24,9 +24,9 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.issue.number,
-                body: `### You can only merge into **\`main\`** from **\`next\`** not **\`${ context.payload.pull_request.head.ref}\`**.
+                body: `## :exclamation: You can only merge into **\`main\`** from **\`next\`** not **\`${ context.payload.pull_request.head.ref}\`**.
 
-              Please create a new pull request with the **\`next\`** branch as the source.`
+                ### Please create a new pull request with the **\`next\`** branch as the source.`
               });
 
               await github.rest.pulls.update({
@@ -60,32 +60,32 @@ jobs:
               - 'apps/docs/**'
             web:
               - 'apps/web/**'
-  # build_and_deploy_docs:
-  #   name: Build and Deploy Docs
-  #   if: ${{ needs.get_changes.outputs.docs == 'true' }}
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - uses: actions/setup-node@v2
-  #       with:
-  #         node-version: 16
-  #         cache: "npm"
-  #     - run: npm ci --no-audit
-  #     - run: npm install --save-dev netlify-cli
-  #     - name: Deploy
-  #       env:
-  #         NETLIFY_SITE_ID: ${{ secrets.DOCS_SITE_ID }}
-  #         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-  #       working-directory: ./apps/docs
-  #       run: netlify deploy --build
-  #     - uses: actions/github-script@v6
-  #       with:
-  #         script: |
-  #           await github.rest.issues.createComment({
-  #             owner: context.repo.owner,
-  #             repo: context.repo.repo,
-  #             issue_number: context.issue.number,
-  #             body: `### You can only merge into **\`main\`** from **\`next\`** not **\`context.payload.pull_request.head\`**.
+  build_and_deploy_docs:
+    name: Build and Deploy Docs
+    if: ${{ needs.get_changes.outputs.docs == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          cache: "npm"
+      - run: npm ci --no-audit
+      - run: npm install --save-dev netlify-cli
+      - name: Deploy
+        env:
+          NETLIFY_SITE_ID: ${{ secrets.DOCS_SITE_ID }}
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        working-directory: ./apps/docs
+        run: netlify deploy --build --alias staging${{ github.event.number }}
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `## :heavy_check_mark: Pull Request Preview: **Docs**.
 
-  #               Please create a new pull request with the **\`next\`** branch as the source.`
-  #           })
+              ### This pull request preview for **\`docs\`** can be found [here](https://staging${ context.payload.number }--ibcarr-testing.netlify.app).`
+            });
