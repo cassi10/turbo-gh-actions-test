@@ -1,3 +1,4 @@
 .turbo
 .next
+.netlify
 package-lock.json
