@@ -4,3 +4,4 @@ node_modules
 .turbo
 .netlify
 tsconfig.tsbuildinfo
+_next

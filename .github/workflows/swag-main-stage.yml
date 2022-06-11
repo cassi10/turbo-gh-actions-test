@@ -64,6 +64,7 @@ jobs:
     needs: get_changes
     name: Build and Deploy Docs
     if: ${{ needs.get_changes.outputs.docs == 'true' }}
+    environment: staging
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
