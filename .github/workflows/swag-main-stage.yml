@@ -109,7 +109,7 @@ jobs:
           restore-keys: ${{ github.head_ref }}-docs-nextjs-${{ hashFiles('package-lock.json') }}-
 
       - name: Build
-        run: turbo run build --cache-dir=.turbo --filter=@scope/docs
+        run: npx turbo run build --cache-dir=.turbo --filter=@scope/docs
 
       - name: Deploy
         env:
