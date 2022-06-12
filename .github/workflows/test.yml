@@ -3,6 +3,4 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "test"
+    uses: ./.github/workflows/a.yml

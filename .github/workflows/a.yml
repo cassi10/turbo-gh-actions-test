@@ -1,0 +1,13 @@
+name: A
+
+on:
+  workflow_call:
+
+jobs:
+  test:
+    uses: ./.github/workflows/b.yml
+  testA:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "A"
