@@ -5,6 +5,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: ./.github/workflows/reusable-workflow.yml
+      - uses: cassi10/turbo-gh-actions-test/.github/workflows/reusable-workflow.yml@main
         with:
           username: "bobyb"
