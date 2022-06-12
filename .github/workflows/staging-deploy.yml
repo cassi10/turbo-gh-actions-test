@@ -10,7 +10,7 @@ on:
 
 jobs:
   check_source_branch:
-    name: Is From Next
+    name: Is Head Ref Next
     uses: ./.github/workflows/check-source-branch.yml
     with:
       base_ref: ${{ github.base_ref }}
