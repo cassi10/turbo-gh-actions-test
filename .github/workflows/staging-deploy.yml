@@ -1,4 +1,4 @@
-name: Staging / Deploy
+name: Staging
 
 on:
   pull_request:
@@ -10,6 +10,7 @@ on:
 
 jobs:
   check_source_branch:
+    name: Is From Next
     uses: ./.github/workflows/check-source-branch.yml
     with:
       base_ref: ${{ github.base_ref }}
@@ -17,6 +18,7 @@ jobs:
       wanted_head_ref: "next"
 
   get_file_changes:
+    name: What Changed
     needs: check_source_branch
     uses: ./.github/workflows/get-file-changes.yml
 

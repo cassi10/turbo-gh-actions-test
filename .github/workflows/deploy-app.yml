@@ -76,10 +76,10 @@ jobs:
       - name: Code Standards
         run: |
           npm run format:check
-          npm run lint --filter=${{ inputs.turborepo_filter }}
+          nps turbo run lint --filter=${{ inputs.turborepo_filter }}
 
       - name: Build
-        run: npm run build --filter=${{ inputs.turborepo_filter }}
+        run: turbo run build --filter=${{ inputs.turborepo_filter }}
 
       - name: Deploy
         env:
@@ -95,7 +95,7 @@ jobs:
           SITE_URL: ${{ inputs.environment_url }}
         with:
           script: |
-            const { SITE_NAME } = process.env
+            const { SITE_NAME, SITE_URL } = process.env
 
             await github.rest.issues.createComment({
               owner: context.repo.owner,
