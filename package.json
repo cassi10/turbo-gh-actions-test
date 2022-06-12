@@ -8,7 +8,6 @@
   ],
   "scripts": {
     "build": "turbo run build",
-    "build:ci": "turbo run build --cache-dir=.turbo",
     "dev": "turbo run dev --parallel",
     "check-types": "turbo run check-types",
     "lint": "turbo run lint",
