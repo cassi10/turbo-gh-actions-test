@@ -9,4 +9,4 @@ jobs:
     with:
       base_ref: ${{ github.base_ref }}
       head_ref: ${{ github.head_ref }}
-      wanted_head_ref: "nextty"
+      wanted_head_ref: "next"
