@@ -140,12 +140,6 @@ jobs:
       url: https://staging--ibcarr-testing.netlify.app
     runs-on: ubuntu-latest
     steps:
-      - name: Setup Node v16
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
-          cache: "npm"
-
       - name: Download Docs Artifacts
         uses: actions/download-artifact@v3
         with:
@@ -154,6 +148,12 @@ jobs:
 
       - name: Install netlify-cli
         run: npm install -D netlify-cli --ignore-scripts --prefer-offline --no-audit
+
+      - name: Setup Node v16
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: "npm"
 
       - name: Deploy
         env:
