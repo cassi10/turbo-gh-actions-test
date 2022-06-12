@@ -144,16 +144,9 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: docs
-          path: ${{ github.workspace }}/
 
       - name: Install netlify-cli
         run: npm install -D netlify-cli --ignore-scripts --prefer-offline --no-audit
-
-      - name: Setup Node v16
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
-          cache: "npm"
 
       - name: Deploy
         env:
