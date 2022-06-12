@@ -10,7 +10,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@netlify/plugin-nextjs": "^4.8.0",
     "@scope/ui": "*",
     "next": "12.0.8",
     "react": "17.0.2",
