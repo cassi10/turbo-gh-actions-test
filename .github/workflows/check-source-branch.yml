@@ -21,28 +21,23 @@ jobs:
     name: Check Source Branch
     runs-on: ubuntu-latest
     steps:
-      - run: |
-          echo ${{ inputs.base_ref }}
-          echo ${{ inputs.head_ref }}
-          echo ${{ inputs.wanted_head_ref }}
-
       - uses: actions/github-script@v6
+        env:
+          BASE_REF: ${{ inputs.base_ref }}
+          HEAD_REF: ${{ inputs.head_ref }}
+          WANTED_HEAD_REF: ${{ inputs.wanted_head_ref }}
         with:
           script: |
-            const baseRef = core.getInput('base_ref')
-            const headRef = core.getInput('head_ref')
-            const wantedHeadRef = core.getInput('wanted_head_ref')
+            const { BASE_REF, HEAD_REF, WANTED_HEAD_REF } = process.env
 
-            console.log(baseRef, headRef, wantedHeadRef)
-
-            if (headRef !== wantedHeadRef) {
+            if (HEAD_REF !== WANTED_HEAD_REF) {
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.issue.number,
-                body: `## :exclamation: You can only merge into **\`${ baseRef }\`** from **\`${ wantedHeadRef }\`** not **\`${ headRef }\`**.
+                body: `## :exclamation: You can only merge into **\`${ BASE_REF }\`** from **\`${ WANTED_HEAD_REF }\`** not **\`${ HEAD_REF }\`**.
 
-                ### Please create a new pull request with the **\`${ wantedHeadRef }\`** branch as the source.`
+                ### Please create a new pull request with the **\`${ WANTED_HEAD_REF }\`** branch as the source.`
               })
 
               await github.rest.pulls.update({
@@ -54,5 +49,5 @@ jobs:
 
               core.setFailed()
             } else {
-              core.info(`Head ref is ${ wantedHeadRef }... continuing.`)
+              core.info(`Head ref is ${ WANTED_HEAD_REF }... continuing.`)
             }
