@@ -131,101 +131,44 @@ jobs:
             ${{ github.workspace }}/apps/docs/netlify.toml
           retention-days: 1
 
-  # deploy_docs:
-  #   name: Deploy Docs
-  #   needs: [get_changes, build]
-  #   if: ${{ needs.get_changes.outputs.docs == 'true' || needs.get_changes.outputs.packages == 'true' }}
-  #   environment:
-  #     name: staging:docs
-  #     url: https://staging--ibcarr-testing.netlify.app
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - run: |
-  #         echo "Download docs build artifact - contains netlify.toml, .next/!cache"
-  #     - name: Setup Node v16
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: 16
-  #         cache: "npm"
+  deploy_docs:
+    name: Deploy Docs
+    needs: [get_changes, build]
+    if: ${{ needs.get_changes.outputs.docs == 'true' || needs.get_changes.outputs.packages == 'true' }}
+    environment:
+      name: staging:docs
+      url: https://staging--ibcarr-testing.netlify.app
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Node v16
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: "npm"
 
-  #     - name: Install netlify-cli
-  #       run: npm install -D netlify-cli --ignore-scripts --prefer-offline --no-audit
+      - name: Download Docs Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: docs
+          path: ${{ github.workspace }}/
 
-  #     - name: Deploy
-  #       env:
-  #         NETLIFY_SITE_ID: ${{ secrets.DOCS_SITE_ID }}
-  #         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-  #       run: netlify deploy --build --alias staging
+      - name: Install netlify-cli
+        run: npm install -D netlify-cli --ignore-scripts --prefer-offline --no-audit
 
-  # deploy_web:
-  #   name: Deploy Web
-  #   needs: [get_changes, build]
-  #   if: ${{ needs.get_changes.outputs.web == 'true' || needs.get_changes.outputs.packages == 'true' }}
-  #   environment: staging:web
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - run: |
-  #         echo "Download web build artifact - contains package.json, .next, _next and .netlify"
-  #         echo "Install netlify-cli and @netlify/plugin-nextjs"
+      - name: Deploy
+        env:
+          NETLIFY_SITE_ID: ${{ secrets.DOCS_SITE_ID }}
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        run: netlify deploy --build --alias staging
+      - name: Comment on PR
+        uses: actions/github-script@v6
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `## :heavy_check_mark: Pull Request Preview: **Docs**.
 
-  # build_and_deploy_docs:
-  #   needs: get_changes
-  #   name: Build and Deploy Docs
-  #   if: ${{ needs.get_changes.outputs.docs == 'true' || needs.get_changes.outputs.packages == 'true' }}
-  #   environment:
-  #     name: staging
-  #     url: https://staging--ibcarr-testing.netlify.app
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout Repository
-  #       uses: actions/checkout@v3
-  #       with:
-  #         ref: ${{ github.head_ref }}
-
-  #     - name: Setup Node v16
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: 16
-
-  #     - name: Cache .npm
-  #       uses: actions/cache@v3
-  #       with:
-  #         path: ~/.npm
-  #         key: npm-${{ hashFiles('package-lock.json') }}
-  #         restore-keys: npm-
-
-  #     - name: Install Dependencies
-  #       run: npm ci --ignore-scripts
-
-  #     - name: Install netlify-cli
-  #       run: npm install --save-dev netlify-cli
-
-  #     - name: Cache .next cache
-  #       uses: actions/cache@v2
-  #       with:
-  #         path: ${{ github.workspace }}/apps/docs/.next/cache
-  #         key: ${{ github.github.head_ref }}-docs-nextjs-cache-${{ github.job }}-${{ hashFiles('package-lock.json') }}
-  #         restore-keys: ${{ github.github.head_ref }}-docs-nextjs-cache-${{ github.job }}-
-
-  #     - name: Build
-  #       run: npx turbo run build --cache-dir=.turbo --filter=@scope/docs
-
-  # - name: Deploy
-  #   env:
-  #     NETLIFY_SITE_ID: ${{ secrets.DOCS_SITE_ID }}
-  #     NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-  #   working-directory: ./apps/docs
-  #   run: netlify deploy --build --alias staging
-
-  #     - name: Comment on PR
-  #       uses: actions/github-script@v6
-  #       with:
-  #         script: |
-  #           await github.rest.issues.createComment({
-  #             owner: context.repo.owner,
-  #             repo: context.repo.repo,
-  #             issue_number: context.issue.number,
-  #             body: `## :heavy_check_mark: Pull Request Preview: **Docs**.
-
-  #             ### This pull request preview for **\`docs\`** can be found [here](https://staging--ibcarr-testing.netlify.app).`
-  #           });
+              ### This pull request preview for **\`docs\`** can be found [here](https://staging--ibcarr-testing.netlify.app).`
+            });
