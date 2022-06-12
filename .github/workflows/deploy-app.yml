@@ -44,16 +44,28 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
 
+      - run: ls -la ~
+        continue-on-error: true
+
       - name: Setup Node v16
         uses: actions/setup-node@v3
         with:
           node-version: 16
           cache: "npm"
 
+      - run: ls -la ~
+        continue-on-error: true
+
       - name: Install Dependencies
         run: |
           npm ci --ignore-scripts --prefer-offline --no-audit
           npm install -D netlify-cli --ignore-scripts --prefer-offline --no-audit
+
+      - run: ls -la ~
+        continue-on-error: true
+
+      - run: ls -la ${{ github.workspace }}/node_modules/.cache
+        continue-on-error: true
 
       - name: Cache turbo cache
         uses: actions/cache@v3
@@ -62,6 +74,13 @@ jobs:
           key: turbo-cache-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
           restore-keys: |
             turbo-cache-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-
+            turbo-cache-${{ runner.os }}-
+
+      - run: ls -la ${{ github.workspace }}/node_modules/.cache
+        continue-on-error: true
+
+      - run: ls -la ${{ github.workspace }}/apps/${{ inputs.working_directory }}
+        continue-on-error: true
 
       - name: Cache .next cache
         uses: actions/cache@v3
@@ -70,6 +89,10 @@ jobs:
           key: nextjs-cache-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
           restore-keys: |
             nextjs-cache-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-
+            nextjs-cache-${{ runner.os }}-
+
+      - run: ls -la ${{ github.workspace }}/apps/${{ inputs.working_directory }}
+        continue-on-error: true
 
       - name: Code Standards
         run: |
