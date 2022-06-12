@@ -47,5 +47,5 @@ jobs:
 
               core.setFailed()
             } else {
-              core.info("Head ref is ${ wantedHeadRef }... continuing.")
+              core.info(`Head ref is ${ wantedHeadRef }... continuing.`)
             }
