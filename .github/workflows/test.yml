@@ -3,6 +3,8 @@ on:
 
 jobs:
   test:
-    uses: ./.github/workflows/reusable-workflow.yml
+    uses: ./.github/workflows/check-source-branch.yml
     with:
-      username: "bobyb"
+      base_ref: "main" # github.base_ref
+      head_ref: "bob" # github.head_ref
+      wanted_head_ref: "next"
