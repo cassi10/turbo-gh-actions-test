@@ -62,6 +62,7 @@ jobs:
           key: turbo-cache-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
           restore-keys: |
             turbo-cache-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-
+            turbo-cache-${{ runner.os }}-
 
       - name: Cache .next cache
         uses: actions/cache@v3
@@ -70,6 +71,7 @@ jobs:
           key: nextjs-cache-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
           restore-keys: |
             nextjs-cache-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-
+            nextjs-cache-${{ runner.os }}-
 
       - name: Code Standards
         run: |
