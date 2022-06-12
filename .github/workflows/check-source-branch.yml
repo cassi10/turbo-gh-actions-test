@@ -1,0 +1,51 @@
+name: Check Pull Request Source Branch
+
+on:
+  workflow_call:
+    inputs:
+      base_ref:
+        description: The target branch of pull request.
+        required: true
+        type: string
+      head_ref:
+        description: The source branch of pull request.
+        required: true
+        type: string
+      wanted_head_ref:
+        description: The wanted source branch of the pull request.
+        required: true
+        type: string
+
+jobs:
+  check_source_branch:
+    name: Check Source Branch
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            const baseRef = core.getInput('base_ref')
+            const headRef = core.getInput('head_ref')
+            const wantedHeadRef = core.getInput('wanted_head_ref')
+
+            if (wantedHeadRef !== headRef) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: `## :exclamation: You can only merge into **\`${ baseRef }\`** from **\`${ wantedHeadRef }\`** not **\`${ headRef }\`**.
+
+                ### Please create a new pull request with the **\`${ wantedHeadRef }\`** branch as the source.`
+              })
+
+              await github.rest.pulls.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: context.issue.number,
+                state: "closed"
+              })
+
+              core.setFailed()
+            } else {
+              core.info("Head ref is ${ wantedHeadRef }... continuing.")
+            }
