@@ -5,9 +5,4 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - run: ls ~
-  testa:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "test success"
+      - run: npm config get cache
