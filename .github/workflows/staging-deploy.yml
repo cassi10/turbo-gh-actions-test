@@ -1,0 +1,36 @@
+name: Staging / Deploy
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "apps/**"
+      - "packages/**"
+
+jobs:
+  check_source_branch:
+    uses: ./.github/workflows/check-source-branch.yml
+    with:
+      base_ref: ${{ github.base_ref }}
+      head_ref: ${{ github.head_ref }}
+      wanted_head_ref: "next"
+
+  get_file_changes:
+    needs: check_source_branch
+    uses: ./.github/workflows/get-file-changes.yml
+
+  docs:
+    name: Docs
+    needs: get_file_changes
+    if: ${{ needs.get_file_changes.outputs.docs == 'true' || needs.get_file_changes.outputs.packages == 'true' }}
+    uses: ./.github/workflows/deploy-app.yml
+    with:
+      turborepo_filter: "@scope/docs"
+      app_name: "Docs"
+      working_directory: "docs"
+      environment_name: "staging:docs"
+      environment_url: "https://staging--ibcarr-testing.netlify.app"
+    secrets:
+      netlify_site_id: ${{ secrets.DOCS_SITE_ID  }}
+      netlify_auth_token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
