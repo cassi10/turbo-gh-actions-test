@@ -3,8 +3,6 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: cassi10/turbo-gh-actions-test/.github/workflows/reusable-workflow.yml@main
-        with:
-          username: "bobyb"
+    uses: ./.github/workflows/reusable-workflow.yml
+    with:
+      username: "bobyb"
