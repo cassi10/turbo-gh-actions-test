@@ -37,7 +37,7 @@ jobs:
                 issue_number: context.issue.number,
                 body: `## :exclamation: You can only merge into **\`${ BASE_REF }\`** from **\`${ WANTED_HEAD_REF }\`** not **\`${ HEAD_REF }\`**.
 
-                ### Please create a new pull request with the **\`${ WANTED_HEAD_REF }\`** branch as the source.`
+              ### Please create a new pull request with the **\`${ WANTED_HEAD_REF }\`** branch as the source.`
               })
 
               await github.rest.pulls.update({
