@@ -94,22 +94,23 @@ jobs:
       - name: Install Dependencies
         run: npm ci --ignore-scripts --prefer-offline --no-audit
 
-      - name: Install netlify-cli
-        run: npm install -D netlify-cli --ignore-scripts --prefer-offline --no-audit
-
       - name: Cache turbo cache
         uses: actions/cache@v3
         with:
           path: ${{ github.workspace }}/node_modules/.cache/turbo
           key: turbo-cache-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
-          restore-keys: turbo-cache-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-
+          restore-keys: |
+            turbo-cache-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-
+            turbo-cache-${{ runner.os }}-
 
       - name: Cache .next cache
         uses: actions/cache@v3
         with:
           path: ${{ github.workspace }}/apps/*/.next/cache
           key: nextjs-cache-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
-          restore-keys: nextjs-cache-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-
+          restore-keys: |
+            nextjs-cache-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-
+            nextjs-cache-${{ runner.os }}-
 
       - name: Code Standards
         run: |
@@ -119,35 +120,53 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Build for Netlify
-        run: echo "npm run build:netlify"
+      - name: Upload Docs Artifacts
+        if: ${{ needs.get_changes.outputs.docs == 'true' || needs.get_changes.outputs.packages == 'true' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: docs
+          path: |
+            ${{ github.workspace }}/apps/docs/.next/
+            !${{ github.workspace }}/apps/docs/.next/cache
+            ${{ github.workspace }}/apps/docs/netlify.toml
+          retention-days: 1
 
-      - name: Upload Build Artifacts
-        run: echo "upload build artifacts - apps/*/package.json apps/*/_next apps/*/.netlify apps/*/.next"
+  # deploy_docs:
+  #   name: Deploy Docs
+  #   needs: [get_changes, build]
+  #   if: ${{ needs.get_changes.outputs.docs == 'true' || needs.get_changes.outputs.packages == 'true' }}
+  #   environment:
+  #     name: staging:docs
+  #     url: https://staging--ibcarr-testing.netlify.app
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - run: |
+  #         echo "Download docs build artifact - contains netlify.toml, .next/!cache"
+  #     - name: Setup Node v16
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: 16
+  #         cache: "npm"
 
-  deploy_docs:
-    name: Deploy Docs
-    needs: [get_changes, build]
-    if: ${{ needs.get_changes.outputs.docs == 'true' || needs.get_changes.outputs.packages == 'true' }}
-    environment:
-      name: staging:docs
-      url: https://staging--ibcarr-testing.netlify.app
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-          echo "Download docs build artifact - contains package.json, .next, _next and .netlify"
-          echo "Install netlify-cli and @netlify/plugin-nextjs"
+  #     - name: Install netlify-cli
+  #       run: npm install -D netlify-cli --ignore-scripts --prefer-offline --no-audit
 
-  deploy_web:
-    name: Deploy Web
-    needs: [get_changes, build]
-    if: ${{ needs.get_changes.outputs.web == 'true' || needs.get_changes.outputs.packages == 'true' }}
-    environment: staging:web
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-          echo "Download web build artifact - contains package.json, .next, _next and .netlify"
-          echo "Install netlify-cli and @netlify/plugin-nextjs"
+  #     - name: Deploy
+  #       env:
+  #         NETLIFY_SITE_ID: ${{ secrets.DOCS_SITE_ID }}
+  #         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+  #       run: netlify deploy --build --alias staging
+
+  # deploy_web:
+  #   name: Deploy Web
+  #   needs: [get_changes, build]
+  #   if: ${{ needs.get_changes.outputs.web == 'true' || needs.get_changes.outputs.packages == 'true' }}
+  #   environment: staging:web
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - run: |
+  #         echo "Download web build artifact - contains package.json, .next, _next and .netlify"
+  #         echo "Install netlify-cli and @netlify/plugin-nextjs"
 
   # build_and_deploy_docs:
   #   needs: get_changes
@@ -191,12 +210,12 @@ jobs:
   #     - name: Build
   #       run: npx turbo run build --cache-dir=.turbo --filter=@scope/docs
 
-  #     - name: Deploy
-  #       env:
-  #         NETLIFY_SITE_ID: ${{ secrets.DOCS_SITE_ID }}
-  #         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-  #       working-directory: ./apps/docs
-  #       run: netlify deploy --build --alias staging
+  # - name: Deploy
+  #   env:
+  #     NETLIFY_SITE_ID: ${{ secrets.DOCS_SITE_ID }}
+  #     NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+  #   working-directory: ./apps/docs
+  #   run: netlify deploy --build --alias staging
 
   #     - name: Comment on PR
   #       uses: actions/github-script@v6
