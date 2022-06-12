@@ -1,0 +1,105 @@
+name: Deploy App
+
+on:
+  workflow_call:
+    inputs:
+      turborepo_filter:
+        description: Filter to use when running build command. e.g @scope/app
+        required: true
+        type: string
+      app_name:
+        description: Name of the app to deploy. e.g Docs
+        required: true
+        type: string
+      working_directory:
+        description: Folder of the app to deploy. e.g docs. Don't include apps/
+        required: true
+        type: string
+      environment_name:
+        description: GitHub environment name to deploy.
+        required: true
+        type: string
+      environment_url:
+        description: URL for GitHub environment to deploy.
+        required: true
+        type: string
+    secrets:
+      netlify_site_id:
+        description: The Netlify Site ID of the site to deploy.
+        required: true
+      netlify_auth_token:
+        description: The Netlify Auth Token.
+        required: true
+
+jobs:
+  build_and_deploy:
+    name: Build / Deploy
+    environment:
+      name: ${{ inputs.environment_name }}
+      url: ${{ inputs.environment_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Setup Node v16
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: "npm"
+
+      - name: Install Dependencies
+        run: |
+          npm ci --ignore-scripts --prefer-offline --no-audit
+          npm install -D netlify-cli --ignore-scripts --prefer-offline --no-audit
+
+      - name: Cache turbo cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ github.workspace }}/node_modules/.cache/turbo
+          key: turbo-cache-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
+          restore-keys: |
+            turbo-cache-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-
+
+      - name: Cache .next cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ github.workspace }}/apps/${{ inputs.working_directory  }}/.next/cache
+          key: nextjs-cache-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
+          restore-keys: |
+            nextjs-cache-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-
+
+      - name: Code Standards
+        run: |
+          npm run format:check
+          npx turbo run lint --filter=${{ inputs.turborepo_filter }}
+
+      - name: Build
+        run: npx turbo run build --filter=${{ inputs.turborepo_filter }}
+
+      - name: Deploy
+        env:
+          NETLIFY_SITE_ID: ${{ secrets.netlify_site_id }}
+          NETLIFY_AUTH_TOKEN: ${{ secrets.netlify_auth_token }}
+        working-directory: apps/${{ inputs.working_directory }}
+        run: netlify deploy --build --alias staging
+
+      - name: Comment on PR
+        uses: actions/github-script@v6
+        env:
+          SITE_NAME: ${{ inputs.app_name }}
+          SITE_URL: ${{ inputs.environment_url }}
+        with:
+          script: |
+            const { SITE_NAME, SITE_URL } = process.env
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `## :heavy_check_mark: Pull Request Preview: **${ SITE_NAME }**.
+
+              ### This pull request preview for **\`${ SITE_NAME }\`** can be found [here](${ SITE_URL }).`
+            })

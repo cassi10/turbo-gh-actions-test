@@ -1,0 +1,34 @@
+name: Get File Changes
+
+on:
+  workflow_call:
+    outputs:
+      docs:
+        description: "Boolean if docs app changed."
+        value: ${{ jobs.get_file_changes.outputs.docs }}
+      web:
+        description: "Boolean if web app changed."
+        value: ${{ jobs.get_file_changes.outputs.web }}
+      packages:
+        description: "Boolean if any packages changed."
+        value: ${{ jobs.get_file_changes.outputs.packages }}
+
+jobs:
+  get_file_changes:
+    name: Check File Changes
+    runs-on: ubuntu-latest
+    outputs:
+      docs: ${{ steps.filter.outputs.docs }}
+      web: ${{ steps.filter.outputs.web }}
+      packages: ${{ steps.filter.outputs.packages }}
+    steps:
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            docs:
+              - 'apps/docs/**'
+            web:
+              - 'apps/web/**'
+            packages:
+              - 'packages/**'
