@@ -146,7 +146,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          echo "Download docs build artifact - contains package.json, .next, _next and .netlify"
+          echo "Download web build artifact - contains package.json, .next, _next and .netlify"
           echo "Install netlify-cli and @netlify/plugin-nextjs"
 
   # build_and_deploy_docs:
