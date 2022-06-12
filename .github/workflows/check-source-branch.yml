@@ -34,7 +34,7 @@ jobs:
             const wantedHeadRef = core.getInput('wanted_head_ref')
 
             console.log(baseRef, headRef, wantedHeadRef)
-
+            
             if (headRef !== wantedHeadRef) {
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
