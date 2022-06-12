@@ -48,9 +48,9 @@ jobs:
       web: ${{ steps.filter.outputs.web }}
       packages: ${{ steps.filter.outputs.packages }}
     steps:
-      - uses: actions/checkout@v2
-        with:
-          ref: ${{ github.head_ref }}
+      # - uses: actions/checkout@v2
+      #   with:
+      #     ref: ${{ github.head_ref }}
       - uses: dorny/paths-filter@v2
         id: filter
         with:
@@ -100,7 +100,7 @@ jobs:
       - name: Cache turbo cache
         uses: actions/cache@v3
         with:
-          path: ${{ github.workspace }}/.turbo
+          path: ${{ github.workspace }}/node_modules/.cache/turbo
           key: turbo-cache-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
           restore-keys: turbo-cache-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-
 
@@ -117,7 +117,7 @@ jobs:
           npm run lint
 
       - name: Build
-        run: npm run build:ci
+        run: npm run build
 
       - name: Build for Netlify
         run: echo "npm run build:netlify"
