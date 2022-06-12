@@ -21,12 +21,19 @@ jobs:
     name: Check Source Branch
     runs-on: ubuntu-latest
     steps:
+      - run: |
+          echo ${{ inputs.base_ref }}
+          echo ${{ inputs.head_ref }}
+          echo ${{ inputs.wanted_head_ref }}
+
       - uses: actions/github-script@v6
         with:
           script: |
             const baseRef = core.getInput('base_ref')
             const headRef = core.getInput('head_ref')
             const wantedHeadRef = core.getInput('wanted_head_ref')
+
+            console.log(baseRef, headRef, wantedHeadRef)
 
             if (wantedHeadRef !== headRef) {
               await github.rest.issues.createComment({
