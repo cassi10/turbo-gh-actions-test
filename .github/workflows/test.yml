@@ -3,8 +3,6 @@ on:
 
 jobs:
   test:
-    uses: ./.github/workflows/check-source-branch.yml
-    with:
-      base_ref: "main" # github.base_ref
-      head_ref: "bob" # github.head_ref
-      wanted_head_ref: "next"
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "test"
