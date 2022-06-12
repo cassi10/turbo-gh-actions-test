@@ -10,33 +10,11 @@ on:
 
 jobs:
   check_source_branch:
-    name: Check Source Branch
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/github-script@v6
-        with:
-          script: |
-            if (context.payload.pull_request.head.ref !== "next") {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-                body: `## :exclamation: You can only merge into **\`main\`** from **\`next\`** not **\`${ context.payload.pull_request.head.ref}\`**.
-
-                ### Please create a new pull request with the **\`next\`** branch as the source.`
-              });
-
-              await github.rest.pulls.update({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: context.issue.number,
-                state: "closed"
-              });
-
-              core.setFailed();
-            } else {
-              core.info("Head ref is next... continuing.");
-            }
+    uses: ./.github/workflows/check-source-branch.yml
+    with:
+      base_ref: ${{ github.base_ref }}
+      head_ref: ${{ github.head_ref }}
+      wanted_head_ref: "next"
   get_changes:
     needs: check_source_branch
     name: Check File Changes
@@ -46,9 +24,6 @@ jobs:
       web: ${{ steps.filter.outputs.web }}
       packages: ${{ steps.filter.outputs.packages }}
     steps:
-      # - uses: actions/checkout@v2
-      #   with:
-      #     ref: ${{ github.head_ref }}
       - uses: dorny/paths-filter@v2
         id: filter
         with:
