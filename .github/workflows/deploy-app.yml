@@ -11,10 +11,6 @@ on:
         description: Command used to deploy app. e.g netlify deploy --build --prod
         required: true
         type: string
-      app_name:
-        description: Name of the app to deploy - only used with PRs. e.g App
-        required: true
-        type: string
       working_directory:
         description: Folder of the app to deploy. e.g apps/app.
         required: true
@@ -26,6 +22,10 @@ on:
       environment_url:
         description: URL for GitHub environment to deploy.
         required: true
+        type: string
+      app_name:
+        description: Name of the app to deploy - only used with PRs. e.g App
+        required: false
         type: string
     secrets:
       netlify_site_id:
