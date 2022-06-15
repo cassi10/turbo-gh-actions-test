@@ -9,9 +9,9 @@ on:
       web:
         description: "Boolean if web app changed."
         value: ${{ jobs.get_file_changes.outputs.web }}
-      packages:
-        description: "Boolean if any packages changed."
-        value: ${{ jobs.get_file_changes.outputs.packages }}
+      ui:
+        description: "Boolean if ui package changed."
+        value: ${{ jobs.get_file_changes.outputs.ui }}
 
 jobs:
   get_file_changes:
@@ -20,10 +20,10 @@ jobs:
     outputs:
       docs: ${{ steps.filter.outputs.docs }}
       web: ${{ steps.filter.outputs.web }}
-      packages: ${{ steps.filter.outputs.packages }}
+      ui: ${{ steps.filter.outputs.ui }}
     steps:
-      - if: ${{ github.event_name != 'pull_request'  }}
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+        if: ${{ github.event_name == 'push'  }}
 
       - uses: dorny/paths-filter@v2
         id: filter
@@ -33,5 +33,5 @@ jobs:
               - 'apps/docs/**'
             web:
               - 'apps/web/**'
-            packages:
-              - 'packages/**'
+            ui:
+              - 'packages/ui/**'
