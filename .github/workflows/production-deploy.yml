@@ -23,7 +23,7 @@ jobs:
     with:
       turborepo_filter: "@scope/docs"
       deploy_command: "netlify deploy --build --prod"
-      working_directory: "docs"
+      working_directory: "apps/docs"
       environment_name: "production:docs"
       environment_url: "https://testing.ibcarr.com"
     secrets:

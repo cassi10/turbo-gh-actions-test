@@ -32,7 +32,7 @@ jobs:
       turborepo_filter: "@scope/docs"
       deploy_command: "netlify deploy --build --alias staging"
       app_name: "Docs"
-      working_directory: "docs"
+      working_directory: "apps/docs"
       environment_name: "staging:docs"
       environment_url: "https://staging--ibcarr-testing.netlify.app"
     secrets:
