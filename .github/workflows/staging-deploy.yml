@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - "apps/**"
-      - "packages/**"
+      - "packages/ui/**"
       - "**/package-lock.json"
 
 jobs:
@@ -26,7 +26,7 @@ jobs:
   docs:
     name: Docs
     needs: get_file_changes
-    if: ${{ needs.get_file_changes.outputs.docs == 'true' || needs.get_file_changes.outputs.packages == 'true' }}
+    if: ${{ needs.get_file_changes.outputs.docs == 'true' || needs.get_file_changes.outputs.ui == 'true' }}
     uses: ./.github/workflows/deploy-app.yml
     with:
       turborepo_filter: "@scope/docs"
