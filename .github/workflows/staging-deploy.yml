@@ -44,5 +44,6 @@ jobs:
     needs: get_file_changes
     if: ${{ needs.get_file_changes.outputs.web == 'true' || needs.get_file_changes.outputs.ui == 'true' }}
     runs-on: ubuntu-latest
+    environment: "staging:web"
     steps:
-      - run: echo "Deploy Web"
+      - run: echo "Deploy Web to Staging"
