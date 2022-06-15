@@ -5,5 +5,13 @@ type ButtonProperties = {
 };
 
 export const Button = ({ children }: ButtonProperties) => {
-  return <button>{children}</button>;
+  return (
+    <button
+      style={{
+        height: "50px"
+      }}
+    >
+      {children}
+    </button>
+  );
 };
