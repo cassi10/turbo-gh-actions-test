@@ -4,15 +4,19 @@ on:
   workflow_call:
     inputs:
       turborepo_filter:
-        description: Filter to use when running build command. e.g @scope/app
+        description: Filter to use on Turborepo build and lint commands. e.g =@scope/app
+        required: true
+        type: string
+      deploy_command:
+        description: Command used to deploy app. e.g netlify deploy --build --prod
         required: true
         type: string
       app_name:
-        description: Name of the app to deploy. e.g Docs
+        description: Name of the app to deploy - only used with PRs. e.g App
         required: true
         type: string
       working_directory:
-        description: Folder of the app to deploy. e.g docs. Don't include apps/
+        description: Folder of the app to deploy. e.g apps/app.
         required: true
         type: string
       environment_name:
@@ -67,7 +71,7 @@ jobs:
       - name: Cache .next cache
         uses: actions/cache@v3
         with:
-          path: ${{ github.workspace }}/apps/${{ inputs.working_directory  }}/.next/cache
+          path: ${{ github.workspace }}/${{ inputs.working_directory  }}/.next/cache
           key: nextjs-cache-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
           restore-keys: |
             nextjs-cache-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}-
@@ -85,10 +89,11 @@ jobs:
         env:
           NETLIFY_SITE_ID: ${{ secrets.netlify_site_id }}
           NETLIFY_AUTH_TOKEN: ${{ secrets.netlify_auth_token }}
-        working-directory: apps/${{ inputs.working_directory }}
-        run: netlify deploy --build --alias staging
+        working-directory: ${{ inputs.working_directory }}
+        run: ${{ inputs.deploy_command }}
 
       - name: Comment on PR
+        if: ${{ github.event_name == 'pull_request'  }}
         uses: actions/github-script@v6
         env:
           SITE_NAME: ${{ inputs.app_name }}

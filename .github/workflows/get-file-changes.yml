@@ -22,6 +22,9 @@ jobs:
       web: ${{ steps.filter.outputs.web }}
       packages: ${{ steps.filter.outputs.packages }}
     steps:
+      - if: ${{ github.event_name != 'pull_request'  }}
+        uses: actions/checkout@v3
+
       - uses: dorny/paths-filter@v2
         id: filter
         with:

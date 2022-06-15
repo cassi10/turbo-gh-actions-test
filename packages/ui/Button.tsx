@@ -5,7 +5,5 @@ type ButtonProperties = {
 };
 
 export const Button = ({ children }: ButtonProperties) => {
-  return (
-    <button onClick={() => console.log("button clicked")}>{children}</button>
-  );
+  return <button>{children}</button>;
 };
