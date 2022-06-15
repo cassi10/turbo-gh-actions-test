@@ -26,8 +26,9 @@ const Docs = ({ word }: DocsProperties) => {
     <div>
       <h1>DOCS</h1>
       <Button>Docs button</Button>
-      <h5>{message}</h5>
-      <h5>{word}</h5>
+      <h5>
+        {message} - {word}
+      </h5>
     </div>
   );
 };

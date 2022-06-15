@@ -5,7 +5,7 @@ const testing = () => {
 };
 
 const handler = (req: NextApiRequest, res: NextApiResponse) => {
-  res.status(200).json({ message: "Hello from Next.js! Bye!" });
+  res.status(200).json({ message: "Hello world!!" });
 };
 
 export { testing };
