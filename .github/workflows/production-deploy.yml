@@ -28,3 +28,11 @@ jobs:
     secrets:
       netlify_site_id: ${{ secrets.DOCS_SITE_ID  }}
       netlify_auth_token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+
+  web:
+    name: Web
+    needs: get_file_changes
+    if: ${{ needs.get_file_changes.outputs.web == 'true' || needs.get_file_changes.outputs.ui == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Deploy Web"
