@@ -12,7 +12,6 @@ on:
 jobs:
   get_file_changes:
     name: What Changed
-    needs: check_source_branch
     uses: ./.github/workflows/get-file-changes.yml
 
   docs:
