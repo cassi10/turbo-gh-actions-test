@@ -7,8 +7,8 @@ on:
         description: Filter to use on Turborepo build and lint commands. e.g =@scope/app
         required: true
         type: string
-      deploy_command:
-        description: Command used to deploy app. e.g netlify deploy --build --prod
+      deploy_flags:
+        description: Flags used toon deploy command - don't include --build. e.g --alias staging
         required: true
         type: string
       working_directory:
@@ -78,6 +78,7 @@ jobs:
             nextjs-cache-${{ runner.os }}-
 
       - name: Code Standards
+        if: ${{ github.event_name == 'push' }}
         run: |
           npm run format:check
           npx turbo run lint --filter=${{ inputs.turborepo_filter }}
@@ -90,10 +91,10 @@ jobs:
           NETLIFY_SITE_ID: ${{ secrets.netlify_site_id }}
           NETLIFY_AUTH_TOKEN: ${{ secrets.netlify_auth_token }}
         working-directory: ${{ inputs.working_directory }}
-        run: ${{ inputs.deploy_command }}
+        run: netlify deploy --build ${{ inputs.deploy_flags }}
 
       - name: Comment on PR
-        if: ${{ github.event_name == 'pull_request'  }}
+        if: ${{ github.event_name == 'pull_request' }}
         uses: actions/github-script@v6
         env:
           SITE_NAME: ${{ inputs.app_name }}

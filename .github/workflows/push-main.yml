@@ -17,7 +17,7 @@ jobs:
     uses: ./.github/workflows/deploy-app.yml
     with:
       turborepo_filter: "@scope/docs"
-      deploy_command: "netlify deploy --build --prod"
+      deploy_flags: "--prod"
       working_directory: "apps/docs"
       environment_name: "production:docs"
       environment_url: "https://testing.ibcarr.com"

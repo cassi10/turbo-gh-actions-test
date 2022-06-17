@@ -26,7 +26,7 @@ jobs:
     uses: ./.github/workflows/deploy-app.yml
     with:
       turborepo_filter: "@scope/docs"
-      deploy_command: "netlify deploy --build --alias staging"
+      deploy_flags: "--alias staging"
       app_name: "Docs"
       working_directory: "apps/docs"
       environment_name: "staging:docs"
