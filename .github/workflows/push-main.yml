@@ -4,10 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - "apps/**"
-      - "packages/ui/**"
-      - "**/package-lock.json"
 
 jobs:
   get_file_changes:

@@ -4,10 +4,6 @@ on:
   pull_request:
     branches:
       - main
-    paths:
-      - "apps/**"
-      - "packages/ui/**"
-      - "**/package-lock.json"
 
 jobs:
   check_source_branch:
