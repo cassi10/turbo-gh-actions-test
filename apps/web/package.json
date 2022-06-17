@@ -10,18 +10,18 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@scope/ui": "^0.0.0",
     "next": "12.0.8",
     "react": "17.0.2",
-    "react-dom": "17.0.2",
-    "@scope/ui": "*"
+    "react-dom": "17.0.2"
   },
   "devDependencies": {
-    "eslint": "7.32.0",
-    "@scope/eslint-config-custom": "*",
-    "next-transpile-modules": "9.0.0",
-    "@scope/tsconfig": "*",
-    "@types/node": "^17.0.12",
+    "@scope/eslint-config-custom": "^0.0.0",
+    "@scope/tsconfig": "^0.0.0",
+    "@types/node": "^17.0.45",
     "@types/react": "17.0.37",
-    "typescript": "^4.5.3"
+    "eslint": "7.32.0",
+    "next-transpile-modules": "9.0.0",
+    "typescript": "^4.7.3"
   }
 }

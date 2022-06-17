@@ -1,17 +1,22 @@
-name: Production
+name: Staging
 
 on:
-  push:
+  pull_request:
     branches:
       - main
-    paths:
-      - "apps/**"
-      - "packages/ui/**"
-      - "**/package-lock.json"
 
 jobs:
+  check_source_branch:
+    name: Is Head Ref Next
+    uses: ./.github/workflows/check-source-branch.yml
+    with:
+      base_ref: ${{ github.base_ref }}
+      head_ref: ${{ github.head_ref }}
+      wanted_head_ref: "next"
+
   get_file_changes:
     name: What Changed
+    needs: check_source_branch
     uses: ./.github/workflows/get-file-changes.yml
 
   docs:
@@ -21,10 +26,11 @@ jobs:
     uses: ./.github/workflows/deploy-app.yml
     with:
       turborepo_filter: "@scope/docs"
-      deploy_command: "netlify deploy --build --prod"
+      deploy_flags: "--alias staging"
+      app_name: "Docs"
       working_directory: "apps/docs"
-      environment_name: "production:docs"
-      environment_url: "https://testing.ibcarr.com"
+      environment_name: "staging:docs"
+      environment_url: "https://staging--ibcarr-testing.netlify.app"
     secrets:
       netlify_site_id: ${{ secrets.DOCS_SITE_ID  }}
       netlify_auth_token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
@@ -34,6 +40,6 @@ jobs:
     needs: get_file_changes
     if: ${{ needs.get_file_changes.outputs.web == 'true' || needs.get_file_changes.outputs.ui == 'true' }}
     runs-on: ubuntu-latest
-    environment: "production:web"
+    environment: "staging:web"
     steps:
-      - run: echo "Deploy Web to Production"
+      - run: echo "Deploy Web to Staging"
