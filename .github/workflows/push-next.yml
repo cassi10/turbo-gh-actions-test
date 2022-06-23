@@ -43,6 +43,4 @@ jobs:
             nextjs-cache-${{ runner.os }}-
 
       - name: Code Standards
-        run: |
-          npm run format:check
-          npx turbo run lint
+        run: npx turbo run lint
