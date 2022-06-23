@@ -6,12 +6,16 @@
       "dependsOn": ["^build"],
       "outputs": [".next/**"]
     },
+    "//#prettier:check": {
+      "outputs": [],
+      "cache": false
+    },
     "check-types": {
       "dependsOn": ["^check-types"],
       "outputs": []
     },
     "lint": {
-      "dependsOn": ["check-types", "^lint"],
+      "dependsOn": ["//#prettier:check", "check-types", "^lint"],
       "outputs": []
     },
     "dev": {

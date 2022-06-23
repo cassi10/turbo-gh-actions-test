@@ -79,9 +79,7 @@ jobs:
 
       - name: Code Standards
         if: ${{ github.event_name == 'push' }}
-        run: |
-          npm run format:check
-          npx turbo run lint --filter=${{ inputs.turborepo_filter }}
+        run: npx turbo run lint --filter=${{ inputs.turborepo_filter }}
 
       - name: Build
         run: npx turbo run build --filter=${{ inputs.turborepo_filter }}
