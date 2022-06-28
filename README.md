@@ -2,10 +2,10 @@
 
 <p align="center">
   <a href="https://testing.ibcarr.com" alt="Docs Deployment">
-    <img src="https://img.shields.io/github/deployments/cassi10/turbo-gh-actions-test/Production%20Docs?label=Docs&logo=netlify&logoColor=ffffff&style=for-the-badge">
+    <img src="https://img.shields.io/github/deployments/cassi10/turbo-gh-actions-test/Docs%20Production?label=Docs&logo=netlify&logoColor=ffffff&style=for-the-badge">
   </a>
   <a href="https://testing.ibcarr.com" alt="Web Deployment">
-    <img src="https://img.shields.io/github/deployments/cassi10/turbo-gh-actions-test/Production%20Web?label=Web&logo=netlify&logoColor=ffffff&style=for-the-badge">
+    <img src="https://img.shields.io/github/deployments/cassi10/turbo-gh-actions-test/Web%20Production?label=Docs&logo=netlify&logoColor=ffffff&style=for-the-badge">
   </a>
 </p>
 

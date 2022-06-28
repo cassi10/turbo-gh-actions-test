@@ -18,6 +18,7 @@ jobs:
     with:
       turborepo_filter: "@scope/docs"
       deploy_flags: "--prod"
+      app_name: "Docs"
       working_directory: "apps/docs"
       environment_name: "Docs Production"
       environment_url: "https://testing.ibcarr.com"
