@@ -1,11 +1,11 @@
 <h1 align="center">GH Actions Testing with Turborepo</h1>
 
 <p align="center">
-  <a href="https://testing.ibcarr.com" alt="Docs">
-    <img src="https://img.shields.io/github/deployments/cassi10/turbo-gh-actions-test/production:docs?color=%2316a34a&label=Docs&style=for-the-badge">
+  <a href="https://testing.ibcarr.com" alt="Docs Deployment">
+    <img src="https://img.shields.io/github/deployments/cassi10/turbo-gh-actions-test/Production%20Docs?label=Docs&logo=netlify&logoColor=ffffff&style=for-the-badge">
   </a>
-  <a href="https://testing.ibcarr.com" alt="Web">
-    <img src="https://img.shields.io/github/deployments/cassi10/turbo-gh-actions-test/production:web?color=%2316a34a&label=Web&style=for-the-badge">
+  <a href="https://testing.ibcarr.com" alt="Web Deployment">
+    <img src="https://img.shields.io/github/deployments/cassi10/turbo-gh-actions-test/Production%20Web?label=Web&logo=netlify&logoColor=ffffff&style=for-the-badge">
   </a>
 </p>
 
