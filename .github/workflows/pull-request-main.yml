@@ -20,6 +20,8 @@ jobs:
     name: What Changed
     needs: check_source_branch
     uses: ./.github/workflows/get-file-changes.yml
+    with:
+      initial-fetch-depth: 1
 
   docs:
     name: Docs

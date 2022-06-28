@@ -2,6 +2,11 @@ name: Get File Changes
 
 on:
   workflow_call:
+    inputs:
+      initial-fetch-depth:
+        required: false
+        type: number
+        default: 100
     outputs:
       docs:
         description: "Boolean if docs app changed."
@@ -28,6 +33,7 @@ jobs:
       - uses: dorny/paths-filter@v2
         id: filter
         with:
+          initial-fetch-depth: ${{ inputs.initial-fetch-depth }}
           filters: |
             docs:
               - 'apps/docs/**'
