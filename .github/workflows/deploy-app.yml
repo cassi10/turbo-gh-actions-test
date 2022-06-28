@@ -91,8 +91,7 @@ jobs:
         working-directory: ${{ inputs.working_directory }}
         run: netlify deploy --build ${{ inputs.deploy_flags }}
 
-      - name: Comment on PR
-        if: ${{ github.event_name == 'pull_request' }}
+      - name: Comment for Deploy
         uses: actions/github-script@v6
         env:
           SITE_NAME: ${{ inputs.app_name }}
@@ -101,11 +100,22 @@ jobs:
           script: |
             const { SITE_NAME, SITE_URL } = process.env
 
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              body: `## :heavy_check_mark: Pull Request Preview: **${ SITE_NAME }**.
+            if (context.eventName === 'pull_request') {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: `## :heavy_check_mark: Pull Request Preview: **${ SITE_NAME }**.
 
-              ### This pull request preview for **\`${ SITE_NAME }\`** can be found [here](${ SITE_URL }).`
-            })
+                ### This pull request preview for **\`${ SITE_NAME }\`** can be found [here](${ SITE_URL }).`
+              })
+            } else if (context.eventName === 'push' && context.ref === 'refs/heads/main') {
+              await github.rest.repos.createCommitComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                commit_sha: context.sha,
+                body: `## :heavy_check_mark: Production Deploy: **${ SITE_NAME }**.
+
+                ### This production deploy for **\`${ SITE_NAME }\`** can be found [here](${ SITE_URL }).`
+              })
+            }
