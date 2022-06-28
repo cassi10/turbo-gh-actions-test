@@ -107,7 +107,7 @@ jobs:
                 issue_number: context.issue.number,
                 body: `## :heavy_check_mark: Pull Request Preview: **${ SITE_NAME }**.
 
-                ### This pull request preview for **\`${ SITE_NAME }\`** can be found [here](${ SITE_URL }).`
+              ### This pull request preview for **\`${ SITE_NAME }\`** can be found [here](${ SITE_URL }).`
               })
             } else if (context.eventName === 'push' && context.ref === 'refs/heads/main') {
               await github.rest.repos.createCommitComment({
@@ -116,6 +116,6 @@ jobs:
                 commit_sha: context.sha,
                 body: `## :heavy_check_mark: Production Deploy: **${ SITE_NAME }**.
 
-                ### This production deploy for **\`${ SITE_NAME }\`** can be found [here](${ SITE_URL }).`
+              ### This production deploy for **\`${ SITE_NAME }\`** can be found [here](${ SITE_URL }).`
               })
             }
