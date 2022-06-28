@@ -1,5 +1,7 @@
 name: Staging
 
+concurrency: staging
+
 on:
   pull_request:
     branches:
@@ -29,7 +31,7 @@ jobs:
       deploy_flags: "--alias staging"
       app_name: "Docs"
       working_directory: "apps/docs"
-      environment_name: "staging:docs"
+      environment_name: "Docs Staging"
       environment_url: "https://staging--ibcarr-testing.netlify.app"
     secrets:
       netlify_site_id: ${{ secrets.DOCS_SITE_ID  }}
@@ -40,6 +42,6 @@ jobs:
     needs: get_file_changes
     if: ${{ needs.get_file_changes.outputs.web == 'true' || needs.get_file_changes.outputs.ui == 'true' }}
     runs-on: ubuntu-latest
-    environment: "staging:web"
+    environment: "Web Staging"
     steps:
       - run: echo "Deploy Web to Staging"

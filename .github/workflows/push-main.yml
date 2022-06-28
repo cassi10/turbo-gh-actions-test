@@ -19,7 +19,7 @@ jobs:
       turborepo_filter: "@scope/docs"
       deploy_flags: "--prod"
       working_directory: "apps/docs"
-      environment_name: "production:docs"
+      environment_name: "Docs Production"
       environment_url: "https://testing.ibcarr.com"
     secrets:
       netlify_site_id: ${{ secrets.DOCS_SITE_ID  }}
@@ -30,6 +30,6 @@ jobs:
     needs: get_file_changes
     if: ${{ needs.get_file_changes.outputs.web == 'true' || needs.get_file_changes.outputs.ui == 'true' }}
     runs-on: ubuntu-latest
-    environment: "production:web"
+    environment: "Web Production"
     steps:
       - run: echo "Deploy Web to Production"
