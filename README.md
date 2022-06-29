@@ -10,7 +10,9 @@
 </p>
 
 <p align="center">
-  <img alt="GitHub" src="https://img.shields.io/github/license/cassi10/turbo-gh-actions-test?label=License&style=flat-square">
+  <a href="./LICENSE">
+    <img alt="GitHub" src="https://img.shields.io/github/license/cassi10/turbo-gh-actions-test?label=License&style=flat-square&cacheSeconds=3600">
+  </a>
 </p>
 
 This repository is here so I can test intergrating [GitHub Actions][ghactions] with [Turborepo][turborepo] and [Netlify][netlify] for CI/CD. This will then be intergrated into my main [ibcarr][ibcarr] monorepo.
