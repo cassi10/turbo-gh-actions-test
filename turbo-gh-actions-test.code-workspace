@@ -3,10 +3,5 @@
     {
       "path": "."
     }
-  ],
-  "settings": {
-    "markdownlint.config": {
-      "no-inline-html": false
-    }
-  }
+  ]
 }
