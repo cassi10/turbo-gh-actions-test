@@ -2,7 +2,7 @@
   "name": "@scope/eslint-config-custom",
   "version": "0.0.0",
   "main": "index.js",
-  "license": "MIT",
+  "license": "GPL-3.0-only",
   "dependencies": {
     "eslint-config-next": "^12.2.0",
     "eslint-config-prettier": "^8.5.0",
