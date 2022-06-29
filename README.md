@@ -5,7 +5,7 @@
     <img src="https://img.shields.io/github/deployments/cassi10/turbo-gh-actions-test/Docs%20Production?label=Docs&logo=netlify&logoColor=ffffff&style=for-the-badge">
   </a>
   <a href="https://testing.ibcarr.com" alt="Web Deployment">
-    <img src="https://img.shields.io/github/deployments/cassi10/turbo-gh-actions-test/Web%20Production?label=Docs&logo=netlify&logoColor=ffffff&style=for-the-badge">
+    <img src="https://img.shields.io/github/deployments/cassi10/turbo-gh-actions-test/Web%20Production?label=Web&logo=netlify&logoColor=ffffff&style=for-the-badge">
   </a>
 </p>
 
